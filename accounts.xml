@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<Accounts>
+    <Account>
+        <ID>1</ID>
+        <Name>Valorant</Name>
+        <Username>cencored</Username>
+        <Password>cencored</Password>
+    </Account>
+    <Account>
+        <ID>2</ID>
+        <Name>League of Legends</Name>
+        <Username>cencored</Username>
+        <Password>cencored</Password>
+    </Account>
+</Accounts>

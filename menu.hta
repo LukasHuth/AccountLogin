@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Select Account</title>
+    <HTA:APPLICATION ID="oHTA" APPLICATIONNAME="AccountSelector" BORDER="thin" SCROLL="no" SINGLEINSTANCE="yes" />
+    <script type="text/javascript">
+      window.resizeTo(300, 200);
+    </script>
+    <script type="text/vbscript">
+        Sub PopulateAccounts()
+            Dim xmlDoc, node, accountSelect
+            Set xmlDoc = CreateObject("MSXML2.DOMDocument.6.0")
+            xmlDoc.async = False
+            xmlDoc.Load "E:\vbs\league\accounts.xml" ' Update with the correct path to your XML file
+
+            Set accountSelect = Document.getElementById("accountSelect")
+            For Each node In xmlDoc.SelectNodes("/Accounts/Account")
+                accountSelect.options.add Document.createElement("option")
+                accountSelect.options(accountSelect.options.length - 1).value = node.SelectSingleNode("ID").Text
+                accountSelect.options(accountSelect.options.length - 1).text = node.SelectSingleNode("Name").Text
+            Next
+        End Sub
+        Sub btnSubmit_onclick()
+            Dim account
+            account = Document.getElementById("accountSelect").value
+            Call Login(account)
+            window.close()
+        End Sub
+        Sub sleep (Timesec)
+            Set objwsh = CreateObject("WScript.Shell") 
+            objwsh.Run "Timeout /T " & Timesec & " /nobreak" ,0 ,true
+            Set objwsh = Nothing
+        End Sub
+        Sub Login(accountID)
+            Dim xmlDoc, node
+            Set xmlDoc = CreateObject("MSXML2.DOMDocument.6.0")
+            xmlDoc.async = False
+            xmlDoc.Load "E:\vbs\league\accounts.xml" ' Update with the correct path to your XML file
+
+            For Each node In xmlDoc.SelectNodes("/Accounts/Account[ID='" & accountID & "']")
+                Dim username, password
+                username = node.SelectSingleNode("Username").Text
+                password = node.SelectSingleNode("Password").Text
+
+                Dim script
+                Set script = CreateObject("WScript.Shell")
+                riot_client_location = "C:\Riot Games\Riot Client\RiotClientServices.exe"
+                Set oExec = script.Exec(riot_client_location)
+                Call sleep(10)
+                script.SendKeys username
+                script.SendKeys "{TAB}"
+                script.SendKeys password
+                script.SendKeys "{ENTER}"
+            Next
+        End Sub
+    </script>
+</head>
+<body onLoad="PopulateAccounts()">
+    <h3>Select Account</h3>
+    <form>
+        <select id="accountSelect">
+            <!-- <option value="3">Smurf</option> -->
+        </select>
+        <input type="button" id="btnSubmit" value="Submit" />
+    </form>
+</body>
+</html>
